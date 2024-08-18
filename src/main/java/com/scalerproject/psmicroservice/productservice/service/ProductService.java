@@ -23,5 +23,5 @@ public interface ProductService {
                                  long id);
     public List<Category> getAllCategories();
     public List<Product> getProductByCategory(String categoryName);
-    public List<Product> limitProductResults(int limitNumber);
+    public List<Product> limitProductResults(int limit);
 }

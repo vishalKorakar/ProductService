@@ -64,7 +64,7 @@ public class ProductController {
         return response;
     }
 
-    @GetMapping("/products")
+//    @GetMapping("/products")
     public List<ProductResponseDTO> getAllProduct() {
         // Step 1:  call to service layer
         List<Product> productList = svc.getAllProduct();
@@ -150,8 +150,24 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public void limitProductResults(@RequestParam int limitNumber){
+    public List<ProductResponseDTO> limitProductResults(@RequestParam(required = false) Integer limit){
 
-        List<Product> productList = svc.limitProductResults(limitNumber);
+        if (limit == null) {
+            return getAllProduct();
+        } else {
+            // Implementation to get limited products
+            List<Product> productList = svc.limitProductResults(limit);
+
+            List<ProductResponseDTO> response = new ArrayList<>();
+
+            // converting models to dtolist
+            for (Product p : productList) {
+                response.add(mapper.convertToProductResponseDTO(p));
+            }
+
+            return response;
+        }
     }
 }
+
+

@@ -87,6 +87,7 @@ public class FakeStoreService implements ProductService {
 
         return products;
     }
+
     public Product deleteProduct(long id) {
 
         // gets the product from the fakestore
@@ -172,6 +173,30 @@ public class FakeStoreService implements ProductService {
         ResponseEntity<FakeStoreProductDTO[]> responseEntity = restTemplate.getForEntity(
                 "https://fakestoreapi.com/products/category/" + categoryName,
                 FakeStoreProductDTO[].class);
+
+        FakeStoreProductDTO[] dtos = responseEntity.getBody();
+
+        if (dtos == null || dtos.length == 0) {
+            System.out.println("Something went wrong..");
+            return new ArrayList<>();
+        }
+
+
+        // Get products by Category name
+        for (FakeStoreProductDTO dto : dtos) {
+            Product prod = mapper.mapToProduct(dto);
+            products.add(prod);
+        }
+
+        return products;
+    }
+
+    @Override
+    public List<Product> limitProductResults(int limit) {
+        List<Product> products = new ArrayList<>();
+
+        ResponseEntity<FakeStoreProductDTO[]> responseEntity = restTemplate.getForEntity(
+                "https://fakestoreapi.com/products?limit=" + limit, FakeStoreProductDTO[].class);
 
         FakeStoreProductDTO[] dtos = responseEntity.getBody();
 
