@@ -25,7 +25,7 @@ public class FakeStoreService implements ProductService {
 
 
     @Override
-    public Product getProductById(long id) {
+    public Product getProductById(Integer id) {
         //s1. Call the FakeStore API
         ResponseEntity<FakeStoreProductDTO> response = restTemplate.
                 getForEntity("https://fakestoreapi.com/products/" + id,
@@ -88,7 +88,7 @@ public class FakeStoreService implements ProductService {
         return products;
     }
 
-    public Product deleteProduct(long id) {
+    public Product deleteProduct(Integer id) {
 
         // gets the product from the fakestore
         ResponseEntity<FakeStoreProductDTO> responseEntity = restTemplate.getForEntity(
@@ -110,7 +110,7 @@ public class FakeStoreService implements ProductService {
     }
 
     @Override
-    public Product updateProduct(String title, String description, String category, String price, String image, long id) {
+    public Product updateProduct(String title, String description, String category, String price, String image, Integer id) {
         FakeStoreProductDTO requestUpdateBody = new FakeStoreProductDTO();
         requestUpdateBody.setTitle(title);
         requestUpdateBody.setDescription(description);
@@ -140,56 +140,56 @@ public class FakeStoreService implements ProductService {
         return productmodel;
     }
 
-    @Override
-    public List<Category> getAllCategories() {
+//    @Override
+//    public List<Category> getAllCategories() {
+//
+//        List<Category> categories = new ArrayList<>();
+//        ResponseEntity<String[]> responseEntity = restTemplate.getForEntity(
+//                "https://fakestoreapi.com/products/categories",
+//                String[].class);
+//
+//        String[] categoryNames  = responseEntity.getBody();
+//        if (categoryNames == null || categoryNames.length == 0) {
+//            System.out.println("Something went wrong..");
+//            return new ArrayList<>();
+//        }
+//
+//
+//        // Get all categories
+//        for (String categoryName : categoryNames) {
+//            Category category = new Category();
+//            category.setTitle(categoryName);
+//            categories.add(category);
+//        }
+//
+//        return categories;
+//    }
 
-        List<Category> categories = new ArrayList<>();
-        ResponseEntity<String[]> responseEntity = restTemplate.getForEntity(
-                "https://fakestoreapi.com/products/categories",
-                String[].class);
-
-        String[] categoryNames  = responseEntity.getBody();
-        if (categoryNames == null || categoryNames.length == 0) {
-            System.out.println("Something went wrong..");
-            return new ArrayList<>();
-        }
-
-
-        // Get all categories
-        for (String categoryName : categoryNames) {
-            Category category = new Category();
-            category.setTitle(categoryName);
-            categories.add(category);
-        }
-
-        return categories;
-    }
-
-    @Override
-    public List<Product> getProductByCategory(String categoryName) {
-
-        List<Product> products = new ArrayList<>();
-
-        ResponseEntity<FakeStoreProductDTO[]> responseEntity = restTemplate.getForEntity(
-                "https://fakestoreapi.com/products/category/" + categoryName,
-                FakeStoreProductDTO[].class);
-
-        FakeStoreProductDTO[] dtos = responseEntity.getBody();
-
-        if (dtos == null || dtos.length == 0) {
-            System.out.println("Something went wrong..");
-            return new ArrayList<>();
-        }
-
-
-        // Get products by Category name
-        for (FakeStoreProductDTO dto : dtos) {
-            Product prod = mapper.mapToProduct(dto);
-            products.add(prod);
-        }
-
-        return products;
-    }
+//    @Override
+//    public List<Product> getProductByCategory(String categoryName) {
+//
+//        List<Product> products = new ArrayList<>();
+//
+//        ResponseEntity<FakeStoreProductDTO[]> responseEntity = restTemplate.getForEntity(
+//                "https://fakestoreapi.com/products/category/" + categoryName,
+//                FakeStoreProductDTO[].class);
+//
+//        FakeStoreProductDTO[] dtos = responseEntity.getBody();
+//
+//        if (dtos == null || dtos.length == 0) {
+//            System.out.println("Something went wrong..");
+//            return new ArrayList<>();
+//        }
+//
+//
+//        // Get products by Category name
+//        for (FakeStoreProductDTO dto : dtos) {
+//            Product prod = mapper.mapToProduct(dto);
+//            products.add(prod);
+//        }
+//
+//        return products;
+//    }
 
     @Override
     public List<Product> limitProductResults(int limit) {

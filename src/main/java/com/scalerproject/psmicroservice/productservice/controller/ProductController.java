@@ -9,7 +9,9 @@ import com.scalerproject.psmicroservice.productservice.exception.InvalidProductI
 import com.scalerproject.psmicroservice.productservice.exception.ProductNotFoundException;
 import com.scalerproject.psmicroservice.productservice.model.Category;
 import com.scalerproject.psmicroservice.productservice.model.Product;
+import com.scalerproject.psmicroservice.productservice.service.CategoryService;
 import com.scalerproject.psmicroservice.productservice.service.ProductService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -24,11 +26,13 @@ public class ProductController {
      * we are using the ProductService name here
      */
     private ProductService svc;
+    private CategoryService categoryService;
     private ProductMapper mapper;
 
-    public ProductController(ProductService svc, ProductMapper mapper) {
+    public ProductController(@Qualifier("selfproductservice") ProductService svc, ProductMapper mapper, CategoryService categoryService) {
         this.svc = svc;
         this.mapper = mapper;
+        this.categoryService = categoryService;
     }
 
     @PostMapping("/products")
@@ -44,7 +48,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public ProductResponseDTO getProductByID(@PathVariable("id") long id) throws InvalidProductIdException, ProductNotFoundException {
+    public ProductResponseDTO getProductByID(@PathVariable("id") Integer id) throws InvalidProductIdException, ProductNotFoundException {
 
 
         if (id == 0) {
@@ -85,7 +89,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/products/{id}")
-    public ProductResponseDTO deleteProduct(@PathVariable("id") long id) throws InvalidProductIdException, ProductNotFoundException {
+    public ProductResponseDTO deleteProduct(@PathVariable("id") Integer id) throws InvalidProductIdException, ProductNotFoundException {
 
         //Validation
         if (id == 0) {
@@ -107,7 +111,7 @@ public class ProductController {
     }
 
     @PutMapping("/products/{id}")
-    public ProductResponseDTO updateProduct(@RequestBody UpdateProductRequest dto, @PathVariable("id") long id) {
+    public ProductResponseDTO updateProduct(@RequestBody UpdateProductRequest dto, @PathVariable("id") Integer id) {
 
         // Validation
 
@@ -119,35 +123,35 @@ public class ProductController {
         return mapper.convertToProductResponseDTO(productUpdate);
     }
 
-    @GetMapping("products/categories")
-    public List<String> getAllCategories(){
+//    @GetMapping("products/categories")
+//    public List<String> getAllCategories(){
+//
+//        List<Category> categoryList = categoryService.getAllCategories();
+//
+//        List<String> response = new ArrayList<>();
+//
+//        // converting models to dtolist
+//        for (Category c : categoryList) {
+//            response.add(c.getTitle());
+//        }
+//
+//        return response;
+//    }
 
-        List<Category> categoryList = svc.getAllCategories();
-
-        List<String> response = new ArrayList<>();
-
-        // converting models to dtolist
-        for (Category c : categoryList) {
-            response.add(c.getTitle());
-        }
-
-        return response;
-    }
-
-    @GetMapping("/products/category/{categoryName}")
-    public List<ProductResponseDTO> getProductByCategory(@PathVariable("categoryName") String categoryName){
-
-        List<Product> prodCatList = svc.getProductByCategory(categoryName);
-
-        List<ProductResponseDTO> response = new ArrayList<>();
-
-        // converting models to dtolist
-        for (Product p : prodCatList) {
-            response.add(mapper.convertToProductResponseDTO(p));
-        }
-
-        return response;
-    }
+//    @GetMapping("/products/category/{categoryName}")
+//    public List<ProductResponseDTO> getProductByCategory(@PathVariable("categoryName") String categoryName){
+//
+//        List<Product> prodCatList = categoryService.getProductByCategory(categoryName);
+//
+//        List<ProductResponseDTO> response = new ArrayList<>();
+//
+//        // converting models to dtolist
+//        for (Product p : prodCatList) {
+//            response.add(mapper.convertToProductResponseDTO(p));
+//        }
+//
+//        return response;
+//    }
 
     @GetMapping("/products")
     public List<ProductResponseDTO> limitProductResults(@RequestParam(required = false) Integer limit){
