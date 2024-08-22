@@ -2,12 +2,12 @@ package com.scalerproject.psmicroservice.productservice.controller;
 
 
 import com.scalerproject.psmicroservice.productservice.DTO.CreateProductRequestDTO;
+import com.scalerproject.psmicroservice.productservice.DTO.DeletedProductResponseDTO;
 import com.scalerproject.psmicroservice.productservice.DTO.ProductResponseDTO;
-import com.scalerproject.psmicroservice.productservice.DTO.UpdateProductRequest;
+import com.scalerproject.psmicroservice.productservice.DTO.UpdateProductRequestDTO;
 import com.scalerproject.psmicroservice.productservice.builder.ProductMapper;
 import com.scalerproject.psmicroservice.productservice.exception.InvalidProductIdException;
 import com.scalerproject.psmicroservice.productservice.exception.ProductNotFoundException;
-import com.scalerproject.psmicroservice.productservice.model.Category;
 import com.scalerproject.psmicroservice.productservice.model.Product;
 import com.scalerproject.psmicroservice.productservice.service.CategoryService;
 import com.scalerproject.psmicroservice.productservice.service.ProductService;
@@ -51,14 +51,14 @@ public class ProductController {
     public ProductResponseDTO getProductByID(@PathVariable("id") Integer id) throws InvalidProductIdException, ProductNotFoundException {
 
 
-        if (id == 0) {
-            throw new InvalidProductIdException("some message");
+        if (id == null) {
+            throw new InvalidProductIdException("The provided code is incorrect, please provide the correct id.");
         }
 
         // Step 1:  call to service layer
         Product product = svc.getProductById(id);
         if (product == null) {
-            throw new ProductNotFoundException();
+            throw new ProductNotFoundException("The product with id " + id + " does not exist.");
         }
 
         // Step 2: Map to ResponseDTO
@@ -69,12 +69,12 @@ public class ProductController {
     }
 
 //    @GetMapping("/products")
-    public List<ProductResponseDTO> getAllProduct() {
+    public List<ProductResponseDTO> getAllProduct() throws ProductNotFoundException {
         // Step 1:  call to service layer
         List<Product> productList = svc.getAllProduct();
 
         if (productList == null || productList.size() == 0) {
-            return null;
+            throw new ProductNotFoundException("There are no product to be displayed.");
         }
 
         List<ProductResponseDTO> response = new ArrayList<>();
@@ -89,35 +89,39 @@ public class ProductController {
     }
 
     @DeleteMapping("/products/{id}")
-    public ProductResponseDTO deleteProduct(@PathVariable("id") Integer id) throws InvalidProductIdException, ProductNotFoundException {
+    public DeletedProductResponseDTO deleteProduct(@PathVariable("id") Integer id) throws InvalidProductIdException, ProductNotFoundException {
 
         //Validation
-        if (id == 0) {
+        if (id == null) {
             throw new InvalidProductIdException("Cannot be deleted as the id entered is not valid");
         }
 
         // Step 1:  call to service layer
-        Product product = svc.getProductById(id);
+        Product product = svc.deleteProduct(id);
         if (product == null) {
-            throw new ProductNotFoundException("cannot be deleted as the entered product is not found");
+            throw new ProductNotFoundException("cannot be deleted as the entered product id " + id + " is not found");
         }
 
-        // Step 2: Map to ResponseDTO
-        ProductResponseDTO response = mapper.convertToProductResponseDTO(product);
-
-        // Step 3: Return
-        return response;
+        // Step 2 and 3: Return Map to ResponseDTO
+        return mapper.mapeToDeletedProductResponseDTO(product);
 
     }
 
     @PutMapping("/products/{id}")
-    public ProductResponseDTO updateProduct(@RequestBody UpdateProductRequest dto, @PathVariable("id") Integer id) {
+    public ProductResponseDTO updateProduct(@RequestBody UpdateProductRequestDTO dto, @PathVariable("id") Integer id) throws InvalidProductIdException, ProductNotFoundException {
 
         // Validation
+        if (id == null){
+            throw new InvalidProductIdException("The provided id in your request is incorrect");
+        }
 
         // Step 1: Call to service layer
-        Product productUpdate = svc.updateProduct(dto.getTitle(),
-                dto.getDescription(), dto.getCategory(), dto.getPrice(), dto.getImage(), id);
+        Product productUpdate = svc.updateProduct(id, dto.getTitle(),
+                dto.getDescription(), dto.getPrice(), dto.getImage(), dto.getCategory());
+
+        if (productUpdate == null){
+            throw new ProductNotFoundException("The product you are searching is not available");
+        }
 
         // S3. convert this to DTO and return.
         return mapper.convertToProductResponseDTO(productUpdate);
@@ -154,7 +158,7 @@ public class ProductController {
 //    }
 
     @GetMapping("/products")
-    public List<ProductResponseDTO> limitProductResults(@RequestParam(required = false) Integer limit){
+    public List<ProductResponseDTO> limitProductResults(@RequestParam(required = false) Integer limit) throws ProductNotFoundException {
 
         if (limit == null) {
             return getAllProduct();

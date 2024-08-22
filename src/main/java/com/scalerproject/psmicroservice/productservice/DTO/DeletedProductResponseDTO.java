@@ -4,19 +4,16 @@ import com.scalerproject.psmicroservice.productservice.model.Category;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
-
+import java.net.Inet4Address;
 
 @Getter
 @Setter
-public class ProductResponseDTO {
+public class DeletedProductResponseDTO {
     private Integer id;
     private String title;
     private String description;
     private double price;
     private String imageURL;
-    private Date createdAt;
-    private Date lastUpdatedAt;
     private Boolean isDeleted;
     private Category category;
 }

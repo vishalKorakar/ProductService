@@ -16,7 +16,7 @@ public class ControllerAdvise {
     @ExceptionHandler(InvalidProductIdException.class)
     public ResponseEntity<ErrorDTO> handleInvalidProductIdException(InvalidProductIdException e) {
         ErrorDTO dto = new ErrorDTO();
-        dto.setCode("some_status_code"); // this is not HTTP status code.
+        dto.setCode("Invalid Id : code 502"); // this is not HTTP status code.
         dto.setMessage(e.getMessage());
 
         return new ResponseEntity<>(dto, HttpStatus.BAD_GATEWAY);
@@ -25,7 +25,7 @@ public class ControllerAdvise {
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ErrorDTO> handleProductNotFoundException(ProductNotFoundException exception) {
         ErrorDTO dto = new ErrorDTO();
-        dto.setCode("some_status_code"); // this is not HTTP status code.
+        dto.setCode("product not found : code 404"); // this is not HTTP status code.
         dto.setMessage(exception.getMessage());
         return new ResponseEntity<>(dto, HttpStatus.NOT_FOUND);
     }

@@ -8,11 +8,14 @@ import java.util.List;
 public interface ProductRepo extends JpaRepository<Product, Integer> {
 
     // Method for finding Product by specified id
-    Product findProductById(int id);
+    Product findProductById(Integer id);
 
     // Creates a product and saves it in the db. [The save can also be used to update a product by passing a specified column name ]
     Product save(Product product);
 
     // Returns all the products
     List<Product> findAll();
+
+    // Updating is deleted.
+//    Product save(Boolean isDeleted);
 }

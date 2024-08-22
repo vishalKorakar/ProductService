@@ -15,12 +15,12 @@ public interface ProductService {
                                  String imageURL);
     public List<Product> getAllProduct();
     public Product deleteProduct(Integer id);
-    public Product updateProduct(String title,
+    public Product updateProduct(Integer id,
+                                 String title,
                                  String description,
-                                 String category,
                                  String price,
                                  String image,
-                                 Integer id);
+                                 String category);
 //    public List<Category> getAllCategories();
 //    public List<Product> getProductByCategory(String categoryName);
     public List<Product> limitProductResults(int limit);

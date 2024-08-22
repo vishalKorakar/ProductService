@@ -1,5 +1,6 @@
 package com.scalerproject.psmicroservice.productservice.service;
 
+import com.scalerproject.psmicroservice.productservice.exception.InvalidProductIdException;
 import com.scalerproject.psmicroservice.productservice.model.Category;
 import com.scalerproject.psmicroservice.productservice.model.Product;
 import com.scalerproject.psmicroservice.productservice.repository.CategoryRepo;
@@ -24,7 +25,11 @@ public class SelfProductService implements ProductService {
     @Override
     public Product getProductById(Integer id) {
         Product product = productRepo.findProductById(id);
-        return null;
+
+        if (product == null){
+            return null;
+        }
+        return product;
     }
 
     @Override
@@ -57,17 +62,47 @@ public class SelfProductService implements ProductService {
 
     @Override
     public List<Product> getAllProduct() {
-        return List.of();
+        List<Product> allProducts = productRepo.findAll();
+
+        if (allProducts == null){
+            return null;
+        }
+
+        return allProducts;
     }
 
     @Override
     public Product deleteProduct(Integer id) {
-        return null;
+        Product deletedProducts = productRepo.findProductById(id);
+
+        if (deletedProducts == null){
+            return null;
+        }
+
+        deletedProducts.setIsDeleted(true);
+
+        return productRepo.save(deletedProducts);
     }
 
     @Override
-    public Product updateProduct(String title, String description, String category, String price, String image, Integer id) {
-        return null;
+    public Product updateProduct(Integer id, String title, String description, String price, String image, String category) {
+        Product updatedProduct = productRepo.findProductById(id);
+
+        if (updatedProduct == null){
+            return null;
+        }
+
+//        Category cat = new Category();
+//        cat.setTitle(category);
+
+        updatedProduct.setTitle(title);
+        updatedProduct.setDescription(description);
+        updatedProduct.setPrice(Double.valueOf(price));
+        updatedProduct.setLastUpdatedAt(new Date());
+//        updatedProduct.setCategory(cat);
+        updatedProduct.setImageURL(image);
+
+        return productRepo.save(updatedProduct);
     }
 
     @Override
