@@ -1,7 +1,7 @@
 package com.scalerproject.psmicroservice.productservice.service;
 
-import com.scalerproject.psmicroservice.productservice.model.Category;
 import com.scalerproject.psmicroservice.productservice.model.Product;
+import com.scalerproject.psmicroservice.productservice.repository.projections.ProductProjection;
 
 import java.util.List;
 
@@ -21,7 +21,8 @@ public interface ProductService {
                                  String price,
                                  String image,
                                  String category);
-//    public List<Category> getAllCategories();
-//    public List<Product> getProductByCategory(String categoryName);
     public List<Product> limitProductResults(int limit);
+    public ProductProjection getProductByTitle(String title);
+
+    public Product getProductByPrice(Double price);
 }

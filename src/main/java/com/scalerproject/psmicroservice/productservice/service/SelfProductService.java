@@ -1,10 +1,9 @@
 package com.scalerproject.psmicroservice.productservice.service;
 
-import com.scalerproject.psmicroservice.productservice.exception.InvalidProductIdException;
 import com.scalerproject.psmicroservice.productservice.model.Category;
 import com.scalerproject.psmicroservice.productservice.model.Product;
-import com.scalerproject.psmicroservice.productservice.repository.CategoryRepo;
 import com.scalerproject.psmicroservice.productservice.repository.ProductRepo;
+import com.scalerproject.psmicroservice.productservice.repository.projections.ProductProjection;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -26,7 +25,7 @@ public class SelfProductService implements ProductService {
     public Product getProductById(Integer id) {
         Product product = productRepo.findProductById(id);
 
-        if (product == null){
+        if (product == null) {
             return null;
         }
         return product;
@@ -64,7 +63,7 @@ public class SelfProductService implements ProductService {
     public List<Product> getAllProduct() {
         List<Product> allProducts = productRepo.findAll();
 
-        if (allProducts == null){
+        if (allProducts == null) {
             return null;
         }
 
@@ -75,7 +74,7 @@ public class SelfProductService implements ProductService {
     public Product deleteProduct(Integer id) {
         Product deletedProducts = productRepo.findProductById(id);
 
-        if (deletedProducts == null){
+        if (deletedProducts == null) {
             return null;
         }
 
@@ -88,7 +87,7 @@ public class SelfProductService implements ProductService {
     public Product updateProduct(Integer id, String title, String description, String price, String image, String category) {
         Product updatedProduct = productRepo.findProductById(id);
 
-        if (updatedProduct == null){
+        if (updatedProduct == null) {
             return null;
         }
 
@@ -108,5 +107,20 @@ public class SelfProductService implements ProductService {
     @Override
     public List<Product> limitProductResults(int limit) {
         return List.of();
+    }
+
+    @Override
+    public ProductProjection getProductByTitle(String title) {
+        return productRepo.getProductByTitle(title);
+    }
+
+    @Override
+    public Product getProductByPrice(Double price) {
+        Product product = productRepo.findProductByPrice(price);
+
+        if (product == null) {
+            return null;
+        }
+        return product;
     }
 }

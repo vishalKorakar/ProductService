@@ -1,14 +1,13 @@
 package com.scalerproject.psmicroservice.productservice.controller;
 
 
-import com.scalerproject.psmicroservice.productservice.DTO.CreateProductRequestDTO;
-import com.scalerproject.psmicroservice.productservice.DTO.DeletedProductResponseDTO;
-import com.scalerproject.psmicroservice.productservice.DTO.ProductResponseDTO;
-import com.scalerproject.psmicroservice.productservice.DTO.UpdateProductRequestDTO;
+import com.scalerproject.psmicroservice.productservice.DTO.*;
 import com.scalerproject.psmicroservice.productservice.builder.ProductMapper;
 import com.scalerproject.psmicroservice.productservice.exception.InvalidProductIdException;
 import com.scalerproject.psmicroservice.productservice.exception.ProductNotFoundException;
 import com.scalerproject.psmicroservice.productservice.model.Product;
+import com.scalerproject.psmicroservice.productservice.repository.ProductRepo;
+import com.scalerproject.psmicroservice.productservice.repository.projections.ProductProjection;
 import com.scalerproject.psmicroservice.productservice.service.CategoryService;
 import com.scalerproject.psmicroservice.productservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -176,6 +175,44 @@ public class ProductController {
             return response;
         }
     }
+
+    @GetMapping("/products/titles")
+    public GetIdAndTitleByTitleDTO getProductByTitle(@RequestParam("title") String title) throws ProductNotFoundException, InvalidProductIdException {
+        if (title == null) {
+            throw new InvalidProductIdException("Invalid product title");
+        }
+
+        ProductProjection product = svc.getProductByTitle(title);
+
+        if (product == null) {
+            throw new ProductNotFoundException("The product you are searching is not available");
+        }
+
+//        for (Product p : productList) {
+//            resProdByTitle.add(mapper.convertToProductResponseDTO(p));
+//        }
+
+        return mapper.mapToGetIdAndTitleDTO(product);
+    }
+
+//    @GetMapping("/products/price")
+//    public ProductResponseDTO getProductByPrice(@RequestParam("price") Double price) throws InvalidProductIdException, ProductNotFoundException {
+//        if (price == null) {
+//            throw new InvalidProductIdException("Invalid product price");
+//        }
+//
+//        Product productPrice = svc.getProductByPrice(price);
+//
+//        if (productPrice == null) {
+//            throw new ProductNotFoundException("The product you are searching is not available");
+//        }
+
+//        for (Product p : productList) {
+//            resProdByTitle.add(mapper.convertToProductResponseDTO(p));
+//        }
+
+//        return mapper.convertToProductResponseDTO(productPrice);
+//    }
 }
 
 

@@ -1,11 +1,9 @@
 package com.scalerproject.psmicroservice.productservice.builder;
 
-import com.scalerproject.psmicroservice.productservice.DTO.DeletedProductResponseDTO;
-import com.scalerproject.psmicroservice.productservice.DTO.FakeStoreProductDTO;
-import com.scalerproject.psmicroservice.productservice.DTO.ProductResponseDTO;
-import com.scalerproject.psmicroservice.productservice.DTO.UpdateProductRequestDTO;
+import com.scalerproject.psmicroservice.productservice.DTO.*;
 import com.scalerproject.psmicroservice.productservice.model.Category;
 import com.scalerproject.psmicroservice.productservice.model.Product;
+import com.scalerproject.psmicroservice.productservice.repository.projections.ProductProjection;
 import org.springframework.stereotype.Component;
 
 
@@ -60,5 +58,15 @@ public class ProductMapper {
         dto.setImageURL(product.getImageURL());
         dto.setIsDeleted(product.getIsDeleted());
         return dto;
+    }
+
+    public GetIdAndTitleByTitleDTO mapToGetIdAndTitleDTO(ProductProjection product) {
+        GetIdAndTitleByTitleDTO dto = new GetIdAndTitleByTitleDTO();
+
+        dto.setId(product.getId());
+        dto.setTitle(product.getTitle());
+
+        return dto;
+
     }
 }
