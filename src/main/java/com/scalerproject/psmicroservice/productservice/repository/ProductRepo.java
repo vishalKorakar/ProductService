@@ -28,10 +28,15 @@ public interface ProductRepo extends JpaRepository<Product, Integer> {
      * The below queries gets all the info and all the products with the title provided.
      */
 
-    @Query("select p.id as id, p.title as title from Product p where p.title = :title")
-    ProductProjection getProductByTitle(@Param("title") String title);
+//    @Query("select p.id as id, p.title as title from Product p where p.title = :title")
+//    ProductProjection getProductByTitle(@Param("title") String title);
+//
+    @Query("select p from Product p where p.id = :id and p.title = :title")
+    Product findProductByIdAndtitle(@Param("id") Integer id, @Param("title") String title);
 
-    @Query("select p from Product p where p.price = :price")
-    Product findProductByPrice(@Param("price") Double price);
+    /**
+     * The below is for pagination.
+     */
+
 
 }

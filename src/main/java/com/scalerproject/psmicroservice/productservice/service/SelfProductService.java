@@ -4,6 +4,9 @@ import com.scalerproject.psmicroservice.productservice.model.Category;
 import com.scalerproject.psmicroservice.productservice.model.Product;
 import com.scalerproject.psmicroservice.productservice.repository.ProductRepo;
 import com.scalerproject.psmicroservice.productservice.repository.projections.ProductProjection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -110,17 +113,17 @@ public class SelfProductService implements ProductService {
     }
 
     @Override
-    public ProductProjection getProductByTitle(String title) {
-        return productRepo.getProductByTitle(title);
+    public Product getProductByIdAndTitle(Integer id, String title) {
+        Product product = productRepo.findProductByIdAndtitle(id, title);
+        return product;
     }
 
     @Override
-    public Product getProductByPrice(Double price) {
-        Product product = productRepo.findProductByPrice(price);
+    public Page<Product> getPaginatedProduct(Integer pageNo, Integer pageSize) {
 
-        if (product == null) {
-            return null;
-        }
-        return product;
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Product> productPage = productRepo.findAll(pageable);
+
+        return productPage;
     }
 }

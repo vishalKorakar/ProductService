@@ -11,6 +11,11 @@ import com.scalerproject.psmicroservice.productservice.repository.projections.Pr
 import com.scalerproject.psmicroservice.productservice.service.CategoryService;
 import com.scalerproject.psmicroservice.productservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -35,6 +40,7 @@ public class ProductController {
     }
 
     @PostMapping("/products")
+    @CachePut(value = "product", key = "#result.id", condition = "#result.id !=null")
     public ProductResponseDTO createProduct(@RequestBody CreateProductRequestDTO dto) {
         // Validation
 
@@ -47,6 +53,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
+    @Cacheable(value = "product", key= "#id")
     public ProductResponseDTO getProductByID(@PathVariable("id") Integer id) throws InvalidProductIdException, ProductNotFoundException {
 
 
@@ -88,6 +95,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/products/{id}")
+    @CacheEvict(value = "product", key="id")
     public DeletedProductResponseDTO deleteProduct(@PathVariable("id") Integer id) throws InvalidProductIdException, ProductNotFoundException {
 
         //Validation
@@ -176,43 +184,52 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/products/titles")
-    public GetIdAndTitleByTitleDTO getProductByTitle(@RequestParam("title") String title) throws ProductNotFoundException, InvalidProductIdException {
-        if (title == null) {
-            throw new InvalidProductIdException("Invalid product title");
-        }
+    @GetMapping("/products/{page}/{size}")
+    public ResponseEntity<List<Product>> getPaginatedProduct(@PathVariable("pageNo") Integer pageNo,
+                                                             @PathVariable("pageSize") Integer pageSize){
 
-        ProductProjection product = svc.getProductByTitle(title);
+        Page<Product> products = svc.getPaginatedProduct(pageNo, pageSize);
+        System.out.println("Received products: " + products.getContent());
+        return ResponseEntity.ok(products.getContent());
 
-        if (product == null) {
-            throw new ProductNotFoundException("The product you are searching is not available");
-        }
-
-//        for (Product p : productList) {
-//            resProdByTitle.add(mapper.convertToProductResponseDTO(p));
-//        }
-
-        return mapper.mapToGetIdAndTitleDTO(product);
     }
 
-//    @GetMapping("/products/price")
-//    public ProductResponseDTO getProductByPrice(@RequestParam("price") Double price) throws InvalidProductIdException, ProductNotFoundException {
+//    @GetMapping("/products/titles")
+//    public GetIdAndTitleByTitleDTO getProductByTitle(@RequestParam("title") String title) throws ProductNotFoundException, InvalidProductIdException {
+//        if (title == null) {
+//            throw new InvalidProductIdException("Invalid product title");
+//        }
+//
+//        ProductProjection product = svc.getProductByTitle(title);
+//
+//        if (product == null) {
+//            throw new ProductNotFoundException("The product you are searching is not available");
+//        }
+//
+////        for (Product p : productList) {
+////            resProdByTitle.add(mapper.convertToProductResponseDTO(p));
+////        }
+//
+//        return mapper.mapToGetIdAndTitleDTO(product);
+//    }
+
+    @GetMapping("/products/idTitle/{id}/{title}")
+    public ProductResponseDTO getProductByIdAndtitle(@PathVariable("id") Integer id, @PathVariable("title") String title){
 //        if (price == null) {
 //            throw new InvalidProductIdException("Invalid product price");
 //        }
-//
-//        Product productPrice = svc.getProductByPrice(price);
-//
+//        Integer id = 103;
+//        String title = "Goku keychain";
+
+        Product productIdTitle = svc.getProductByIdAndTitle(id, title);
+        System.out.println("Output: " + productIdTitle);
+
 //        if (productPrice == null) {
 //            throw new ProductNotFoundException("The product you are searching is not available");
 //        }
 
-//        for (Product p : productList) {
-//            resProdByTitle.add(mapper.convertToProductResponseDTO(p));
-//        }
-
-//        return mapper.convertToProductResponseDTO(productPrice);
-//    }
+        return mapper.convertToProductResponseDTO(productIdTitle);
+    }
 }
 
 

@@ -2,6 +2,7 @@ package com.scalerproject.psmicroservice.productservice.service;
 
 import com.scalerproject.psmicroservice.productservice.model.Product;
 import com.scalerproject.psmicroservice.productservice.repository.projections.ProductProjection;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -22,7 +23,9 @@ public interface ProductService {
                                  String image,
                                  String category);
     public List<Product> limitProductResults(int limit);
-    public ProductProjection getProductByTitle(String title);
+//    public ProductProjection getProductByTitle(String title);
 
-    public Product getProductByPrice(Double price);
+    public Product getProductByIdAndTitle(Integer id, String title);
+
+    public Page<Product> getPaginatedProduct(Integer page, Integer size);
 }

@@ -67,12 +67,16 @@
 //
 //    @Override
 //    public List<Product> getAllProduct() {
+//
 //        List<Product> products = new ArrayList<>();
+//
 //        ResponseEntity<FakeStoreProductDTO[]> responseEntity = restTemplate.getForEntity(
 //                "https://fakestoreapi.com/products",
 //                FakeStoreProductDTO[].class);
 //
 //        FakeStoreProductDTO[] dtos = responseEntity.getBody();
+//
+//
 //        if (dtos == null || dtos.length == 0) {
 //            System.out.println("Something went wrong..");
 //            return new ArrayList<>();
