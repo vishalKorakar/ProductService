@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/productapi")
 public class ProductController {
 
     /**
@@ -53,8 +54,8 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    @Cacheable(value = "product", key= "#id")
-    public ProductResponseDTO getProductByID(@PathVariable("id") Integer id) throws InvalidProductIdException, ProductNotFoundException {
+//    @Cacheable(value = "product", key= "#id")
+    public Product getProductByID(@PathVariable("id") Integer id) throws InvalidProductIdException, ProductNotFoundException {
 
 
         if (id == null) {
@@ -68,10 +69,10 @@ public class ProductController {
         }
 
         // Step 2: Map to ResponseDTO
-        ProductResponseDTO response = mapper.convertToProductResponseDTO(product);
+//        ProductResponseDTO response = mapper.convertToProductResponseDTO(product);
 
         // Step 3: Return
-        return response;
+        return product;
     }
 
 //    @GetMapping("/products")
